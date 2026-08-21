@@ -1,7 +1,7 @@
 [Plugin]
 #!name=节点风险
 #!desc=节点IP风险欺诈查询，结果仅供参考
-#!author=pwremilk
+#!author=pwremilk[https://github.com/pwremilk]
 #!icon=checkerboard.shield
 
 [Script]
