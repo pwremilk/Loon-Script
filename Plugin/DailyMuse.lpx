@@ -1,7 +1,7 @@
 [Plugin]
 #!name=每日一句
 #!desc=每天推送一句话附上嘿嘿图，可自定义时间随时推送
-#!author=pwremilk
+#!author=pwremilk[https://github.com/pwremilk]
 #!icon=https://raw.githubusercontent.com/pwremilk/Loon-Script/refs/heads/main/icon/DailyMuse.png
 
 [Argument]
