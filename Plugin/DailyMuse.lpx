@@ -1,0 +1,17 @@
+[Plugin]
+#!name=每日一句
+#!desc=每天推送一句话附上嘿嘿图，可自定义时间随时推送
+#!author=pwremilk
+#!icon=https://raw.githubusercontent.com/pwremilk/Loon-Script/refs/heads/master/icon/DailyMuse.png
+
+[Argument]
+# 是否启用该插件定时任务，默认开启 (true)
+enable=switch, true, tag=启用插件, desc="控制该定时任务是否生效"
+# 对应图片中的“设置时间”，默认设置为每天早上 6:00
+cron=input, "0 6 * * *", tag=设置时间, desc="Cron 表达式，默认每天 06:00 推送"
+# 对应图片中的“话题类型”，提供音乐、文学等选项
+type=select,"音乐","网络","文学","诗词","影视","动画","游戏","哲学","原创","机灵",tag=话题类型,desc="选择你喜欢的话题类型"
+
+[Script]
+# 根据用户自定义的 Cron 时间和参数触发脚本
+cron {cron} script-path=https://raw.githubusercontent.com/pwremilk/Loon-Script/refs/heads/master/Scripts/DailyMuse.js, enabled={enable}, argument=[{type}], tag=每日一句, img-url=https://raw.githubusercontent.com/pwremilk/Loon-Script/refs/heads/master/icon/DailyMuse.png
