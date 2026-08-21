@@ -5,4 +5,4 @@
 #!icon=checkerboard.shield
 
 [Script]
-generic script-path=https://raw.githubusercontent.com/pwremilk/Loon-Script/refs/heads/master/Scripts/IPfraud.js, timeout=30, tag=IP风险, img-url=checkerboard.shield
+generic script-path=https://raw.githubusercontent.com/pwremilk/Loon-Script/refs/heads/main/Scripts/IPfraud.js, timeout=30, tag=IP风险, img-url=checkerboard.shield
