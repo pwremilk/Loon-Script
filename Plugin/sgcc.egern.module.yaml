@@ -23,15 +23,22 @@ env_schema:
     name: 请求策略
     description: 国网接口务必直连，保持 DIRECT
     default_value: DIRECT
+  SGCC_RUNAT:
+    name: 运行时刻
+    description: 只在该整点执行查询(填小时数如 08 或 8:10)；留空=整点tick即可跑。短信验证处理不受限
+    default_value: ""
   SGCC_SHOW_RECENT:
     name: 显示近7日电量
     options:
       - "true"
       - "false"
     default_value: "true"
+compat_arguments:
+  CRONEXP: "10 * * * *"
+compat_arguments_desc: CRONEXP=运行cron,默认每小时10分tick(配合SGCC_RUNAT定时); 想纯cron控制可改成如 "30 19 * * *" 并把SGCC_RUNAT留空
 scriptings:
 - schedule:
     name: 网上国网
-    cron: "10 * * * *"
-    script_url: https://raw.githubusercontent.com/pwremilk/Loon-Script/main/Scripts/sgcc.egern.js?v=2
+    cron: "{{{CRONEXP}}}"
+    script_url: https://raw.githubusercontent.com/pwremilk/Loon-Script/main/Scripts/sgcc.egern.js?v=3
     timeout: 90
