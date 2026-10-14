@@ -557,7 +557,9 @@ async function queryAccount(app, a) {
         const text = await resp.text();
         let safe = text;
         try { JSON.parse(text); } catch (_) {
-          safe = JSON.stringify({ code: 'RAW' + resp.status, message: 'HTTP ' + resp.status + ' | ' + (text || '\u7a7a\u54cd\u5e94').slice(0, 150) });
+          let srv = '';
+          try { srv = String((resp.headers && (resp.headers.get ? resp.headers.get('server') : resp.headers.server)) || '-'); } catch (_) {}
+          safe = JSON.stringify({ code: 'RAW' + resp.status, message: 'HTTP ' + resp.status + ' srv=' + srv.slice(0, 30) + ' policy=' + (req.policy || E.SGCC_POLICY || 'DIRECT') + ' | ' + (text || '\u7a7a\u54cd\u5e94').slice(0, 120) });
         }
         return { status: resp.status, text: async () => safe };
       },
