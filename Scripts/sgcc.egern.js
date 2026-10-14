@@ -548,11 +548,19 @@ async function queryAccount(app, a) {
     env: E,
     storage: ctx.storage,
     http: {
-      post: (url, req) => rawPost(url, {
-        headers: req.headers, body: req.body,
-        timeout: req.timeout || 20000,
-        policy: req.policy || E.SGCC_POLICY || 'DIRECT',
-      }),
+      post: async (url, req) => {
+        const resp = await rawPost(url, {
+          headers: req.headers, body: req.body,
+          timeout: req.timeout || 20000,
+          policy: req.policy || E.SGCC_POLICY || 'DIRECT',
+        });
+        const text = await resp.text();
+        let safe = text;
+        try { JSON.parse(text); } catch (_) {
+          safe = JSON.stringify({ code: 'RAW' + resp.status, message: 'HTTP ' + resp.status + ' | ' + (text || '\u7a7a\u54cd\u5e94').slice(0, 150) });
+        }
+        return { status: resp.status, text: async () => safe };
+      },
     },
   };
   const notify = (title, body) => { try { ctx.notify({ title, body }); } catch (_) {} };
