@@ -542,6 +542,7 @@ async function queryAccount(app, a) {
 })();
 /* =====[Egern 适配 + 主流程]===== */
   const E = Object.assign({}, ctx.env || {});
+  const isManual = ctx.widgetFamily !== undefined || String((ctx.script && ctx.script.name) || '').includes('\u624b\u52a8');
   const rawPost = ctx.http.post.bind(ctx.http);
   const sctx = {
     env: E,
@@ -593,8 +594,8 @@ async function queryAccount(app, a) {
   }
 
   const th0 = ctx.storage.getJSON(THROTTLE) || {};
-  if (th0.queryDay === today && !String(E.SGCC_SMS || '').replace(/\D/g, '')) return; // 今天已查过
-  if (!windowOk) return; // 未到 SGCC_RUNAT 时段（登录/短信处理不受此限）
+  if (th0.queryDay === today && !String(E.SGCC_SMS || '').replace(/\D/g, '') && !isManual) return; // 今天已查过
+  if (!windowOk && !isManual) return; // 未到 SGCC_RUNAT 时段（登录/短信处理不受此限）
 
   let accs = Array.isArray(sess.accounts) ? sess.accounts.filter(Boolean) : [];
   if (!accs.length) { notify('网上国网', '该帐号没有绑定用电户号'); return; }
