@@ -620,8 +620,19 @@ async function queryAccount(app, a) {
       if (!consFull) consFull = String(a.consNo).replace(/\D/g, '') || String(a.consNo);
       let nm = String(ui.consName_dst || a.name || '').trim();
       if (/[:\uFF1A\/]/.test(nm) || nm.length > 20) nm = '';
-      const dayList = (Array.isArray(r.dayElecQuantity31 && r.dayElecQuantity31.sevenEleList) ? r.dayElecQuantity31.sevenEleList : [])
-        .slice().sort((x, y) => String(x.day).replace(/\D/g, '').localeCompare(String(y.day).replace(/\D/g, '')));
+      const todayD = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10).replace(/-/g, '');
+      const daySeen = {};
+      const dayList = [];
+      (Array.isArray(r.dayElecQuantity31 && r.dayElecQuantity31.sevenEleList) ? r.dayElecQuantity31.sevenEleList : []).forEach((x) => {
+        if (!x) return;
+        const d = String(x.day).replace(/\D/g, '');
+        if (d.length !== 8 || d > todayD || daySeen[d]) return;
+        const pqS = String(x.dayElePq == null ? '' : x.dayElePq).trim();
+        if (!pqS || !/^-?\d+(\.\d+)?$/.test(pqS)) return;
+        daySeen[d] = 1;
+        dayList.push({ day: d, pqS });
+      });
+      dayList.sort((x, y) => x.day.localeCompare(y.day));
       const fnum = (v) => { const n = Number(v); return Number.isFinite(n) ? n : NaN; };
       let out = '';
       if (Number.isFinite(fnum(r.monthTotal))) out += '\u672c\u671f\u7528\u7535: ' + r.monthTotal + '\u5ea6';
@@ -630,20 +641,18 @@ async function queryAccount(app, a) {
       const di = (r.monthElecQuantity && r.monthElecQuantity.dataInfo) || {};
       if (di.totalEleNum && di.totalEleCost) out += '\n\u5e74\u5ea6\u7528\u7535: ' + di.totalEleNum + '\u5ea6  \u7d2f\u8ba1\u82b1\u8d39: ' + di.totalEleCost + '\u5143';
       const last5 = dayList.slice(-5);
-      const avg5 = last5.length ? last5.reduce((s0, x) => s0 + (fnum(x.dayElePq) || 0), 0) / last5.length : NaN;
+      const avg5 = last5.length ? last5.reduce((s0, x) => s0 + (fnum(x.pqS) || 0), 0) / last5.length : NaN;
       if (!showRecent) {
         if (bal > 0 && Number.isFinite(avg5) && avg5 > 0) out += '\n\u9884\u8ba1\u53ef\u7528: ' + Math.floor(bal / avg5) + '\u5929';
         else if (fnum(eb.prepayBal) > 0) out += '\n\u9884\u5b58\u7535\u8d39: ' + eb.prepayBal + '\u5143';
       }
       out += '\n\u6237\u53f7\u4fe1\u606f: ' + consFull + (nm ? '|' + nm : '');
       if (a.orgName) out += '\n\u4f9b\u7535\u5355\u4f4d: ' + a.orgName;
-      const sum5 = last5.reduce((s0, x) => s0 + (fnum(x.dayElePq) || 0), 0);
+      const sum5 = last5.reduce((s0, x) => s0 + (fnum(x.pqS) || 0), 0);
       if (sum5 > 0) out += '\n\u4e94\u65e5\u7528\u7535: ' + Math.round(sum5 * 100) / 100 + '\u5ea6';
       if (showRecent) {
         dayList.slice(-7).forEach((x) => {
-          const d = String(x.day).replace(/\D/g, '');
-          const md = d.length >= 8 ? d.slice(4, 6) + '-' + d.slice(6, 8) : d;
-          out += '\n' + md + '\u7528\u7535: ' + (x.dayElePq || '-') + '\u5ea6\u26a1';
+          out += '\n' + x.day.slice(4, 6) + '-' + x.day.slice(6, 8) + '\u7528\u7535: ' + x.pqS + '\u5ea6\u26a1';
         });
       }
       blocks.push(out);
