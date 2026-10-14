@@ -1,0 +1,19 @@
+#!name=网上国网（原生协议版）
+#!desc=电费余额/本月电量/近7日用量；App 3.2.3 原生协议直连(SM2/SM3/SM4+Turing)，无第三方中转。首次运行若提示短信验证：把6位验证码填「短信验证码」保存后手动运行一次，然后清空该项
+#!author=Hermes（协议: hass-state-grid MIT / githubdulong SGCC.js）
+#!icon=https://is1-ssl.mzstatic.com/image/thumb/Purple116/v4/83/d8/8a/83d88a92-5a4d-7a2f-118c-80d795e7a9f6/AppIcon-0-0-1x_U007emarketing-0-5-0-0-sRGB-85-220.png/144x144.png
+#!tag=签到监控,网上国网
+#!homepage=https://github.com/pwremilk/Loon-Script
+
+[Argument]
+CRONEXP=input,"10 8 * * *",tag=运行时间, desc=Cron表达式,默认每天08:10；随时改随时生效
+username=input,"",tag=登录手机号, desc=网上国网App登录手机号
+password=input,"",tag=登录密码, desc=App登录密码,没设过先在App里设置
+smscode=input,"",tag=短信验证码, desc=仅首次新设备验证时填6位；登录成功后请清空
+account=input,"",tag=户号, desc=资源篮=第一个；填尾号如4567；#2=第二个；all=全部通知
+notifyall=switch,"false","true",tag=通知全部户号, desc=多户号时每个都推送
+showrecent=switch,"true","false",tag=显示近7日电量, desc=每行一天
+policy=input,"DIRECT",tag=请求策略, desc=国网接口务必直连,保持DIRECT
+
+[Script]
+cron {CRONEXP} script-path=https://raw.githubusercontent.com/pwremilk/Loon-Script/main/Scripts/sgcc.loon.js, timeout=90, tag=网上国网, argument=[{username}, {password}, {smscode}, {account}, {policy}, {notifyall}, {showrecent}]
