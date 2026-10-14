@@ -33,5 +33,5 @@ scriptings:
 - schedule:
     name: 网上国网
     cron: "10 * * * *"
-    script_url: https://raw.githubusercontent.com/pwremilk/Loon-Script/main/Scripts/sgcc.egern.js?v=1
+    script_url: https://raw.githubusercontent.com/pwremilk/Loon-Script/main/Scripts/sgcc.egern.js?v=2
     timeout: 90
