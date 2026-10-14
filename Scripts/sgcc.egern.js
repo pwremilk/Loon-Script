@@ -563,9 +563,6 @@ async function queryAccount(app, a) {
   if (!user || !pass) { notify('网上国网', '缺少账号或密码：在配置的 SGCC_USERNAME ／ SGCC_PASSWORD 里填手机号和密码'); return; }
 
   const app = new SgApp(sctx, user, pass);
-  const runAt = String(E.SGCC_RUNAT || '').trim();
-  const cstNow = new Date(Date.now() + 8 * 3600000);
-  const windowOk = !runAt || runAt === '*' || String(cstNow.getUTCHours()).padStart(2, '0') === runAt.slice(0, 2).padStart(2, '0');
   const THROTTLE = 'sgcc_egern_throttle';
   const today = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10);
 
@@ -595,7 +592,6 @@ async function queryAccount(app, a) {
 
   const th0 = ctx.storage.getJSON(THROTTLE) || {};
   if (th0.queryDay === today && !String(E.SGCC_SMS || '').replace(/\D/g, '') && !isManual) return; // 今天已查过
-  if (!windowOk && !isManual) return; // 未到 SGCC_RUNAT 时段（登录/短信处理不受此限）
 
   let accs = Array.isArray(sess.accounts) ? sess.accounts.filter(Boolean) : [];
   if (!accs.length) { notify('网上国网', '该帐号没有绑定用电户号'); return; }
