@@ -36,9 +36,9 @@ scriptings:
 - schedule:
     name: 网上国网
     cron: "{{{CRONEXP}}}"
-    script_url: https://raw.githubusercontent.com/pwremilk/Loon-Script/main/Scripts/sgcc.egern.js?v=6
+    script_url: https://raw.githubusercontent.com/pwremilk/Loon-Script/main/Scripts/sgcc.egern.js?v=7
     timeout: 90
 - generic:
     name: 网上国网-手动
-    script_url: https://raw.githubusercontent.com/pwremilk/Loon-Script/main/Scripts/sgcc.egern.js?v=6
+    script_url: https://raw.githubusercontent.com/pwremilk/Loon-Script/main/Scripts/sgcc.egern.js?v=7
     timeout: 90
