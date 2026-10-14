@@ -573,8 +573,20 @@ function sgArg() {
           if (req.policy) opt.policy = req.policy;
           $httpClient.post(opt, function (err, resp) {
             if (err) return reject(new Error((err && (err.error || err.message)) || JSON.stringify(err)));
-            const text = (resp && resp.body) || '';
-            resolve({ status: (resp && (resp.status || resp.statusCode)) || 0, text: function () { return Promise.resolve(text); } });
+            let text = (resp && typeof resp.body === 'string' && resp.body) ? resp.body : '';
+            if (!text && resp && resp.bodyBytes) {
+              try {
+                const arr = resp.bodyBytes;
+                let bin = '';
+                for (let i = 0; i < arr.length; i += 4096) bin += String.fromCharCode.apply(null, Array.prototype.slice.call(arr, i, i + 4096));
+                text = decodeURIComponent(escape(bin));
+              } catch (_) {}
+            }
+            let safe = text;
+            try { JSON.parse(text); } catch (_) {
+              safe = JSON.stringify({ code: 'RAW' + ((resp && (resp.status || resp.statusCode)) || 0), message: 'HTTP ' + ((resp && (resp.status || resp.statusCode)) || '?') + ' | ' + (text || '\u7a7a\u54cd\u5e94').slice(0, 150) });
+            }
+            resolve({ status: (resp && (resp.status || resp.statusCode)) || 0, text: function () { return Promise.resolve(safe); } });
           });
         });
       },
