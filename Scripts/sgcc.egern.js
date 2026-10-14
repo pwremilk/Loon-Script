@@ -610,26 +610,52 @@ async function queryAccount(app, a) {
     try {
       const r = await queryAccount(app, a);
       const eb = r.eleBill || {};
+      const ui = r.userInfo || {};
       const bal = Number(eb.sumMoney || 0);
-      let line = (a.name ? a.name + ' ' : '') + '户号…' + String(a.consNo).slice(-5) + 
-        (eb.historyOwe > 0 ? '❗欠费 ¥' + Math.abs(bal).toFixed(2) : '余额 ¥' + bal.toFixed(2));
-      if (Number.isFinite(r.monthTotal)) line += '\n本月用电 ' + r.monthTotal + ' 度';
-      if (eb.date) line += '（账单 ' + eb.date + '）';
-      if (showRecent && Array.isArray(r.dayElecQuantity31.sevenEleList)) {
-        const last = r.dayElecQuantity31.sevenEleList.slice(-7);
-        if (last.length) line += '\n近7日: ' + last.map((x) => String(x.day).slice(6) + ':' + (x.dayElePq || '-')).join(' ');
+      const owe = Number(eb.historyOwe || 0) > 0;
+      const segs = String(a.consNo).split(':');
+      let consFull = '';
+      segs.forEach((g) => { if (/^\d{8,}$/.test(g) && g.length >= consFull.length) consFull = g; });
+      if (!consFull) consFull = String(a.consNo).replace(/\D/g, '') || String(a.consNo);
+      let nm = String(ui.consName_dst || a.name || '').trim();
+      if (/[:\uFF1A\/]/.test(nm) || nm.length > 20) nm = '';
+      const dayList = (Array.isArray(r.dayElecQuantity31 && r.dayElecQuantity31.sevenEleList) ? r.dayElecQuantity31.sevenEleList : [])
+        .slice().sort((x, y) => String(x.day).replace(/\D/g, '').localeCompare(String(y.day).replace(/\D/g, '')));
+      const fnum = (v) => { const n = Number(v); return Number.isFinite(n) ? n : NaN; };
+      let out = '';
+      if (Number.isFinite(fnum(r.monthTotal))) out += '\u672c\u671f\u7528\u7535: ' + r.monthTotal + '\u5ea6';
+      out += (out ? '  ' : '') + '\u8d26\u6237\u4f59\u989d: ' + (owe ? '-' : '') + Math.abs(bal).toFixed(2) + '\u5143';
+      out += '\n\u622a\u81f3\u65e5\u671f: ' + String(eb.date || '--').slice(0, 10);
+      const di = (r.monthElecQuantity && r.monthElecQuantity.dataInfo) || {};
+      if (di.totalEleNum && di.totalEleCost) out += '\n\u5e74\u5ea6\u7528\u7535: ' + di.totalEleNum + '\u5ea6  \u7d2f\u8ba1\u82b1\u8d39: ' + di.totalEleCost + '\u5143';
+      const last5 = dayList.slice(-5);
+      const avg5 = last5.length ? last5.reduce((s0, x) => s0 + (fnum(x.dayElePq) || 0), 0) / last5.length : NaN;
+      if (!showRecent) {
+        if (bal > 0 && Number.isFinite(avg5) && avg5 > 0) out += '\n\u9884\u8ba1\u53ef\u7528: ' + Math.floor(bal / avg5) + '\u5929';
+        else if (fnum(eb.prepayBal) > 0) out += '\n\u9884\u5b58\u7535\u8d39: ' + eb.prepayBal + '\u5143';
       }
-      blocks.push(line);
+      out += '\n\u6237\u53f7\u4fe1\u606f: ' + consFull + (nm ? '|' + nm : '');
+      if (a.orgName) out += '\n\u4f9b\u7535\u5355\u4f4d: ' + a.orgName;
+      const sum5 = last5.reduce((s0, x) => s0 + (fnum(x.dayElePq) || 0), 0);
+      if (sum5 > 0) out += '\n\u4e94\u65e5\u7528\u7535: ' + Math.round(sum5 * 100) / 100 + '\u5ea6';
+      if (showRecent) {
+        dayList.slice(-7).forEach((x) => {
+          const d = String(x.day).replace(/\D/g, '');
+          const md = d.length >= 8 ? d.slice(4, 6) + '-' + d.slice(6, 8) : d;
+          out += '\n' + md + '\u7528\u7535: ' + (x.dayElePq || '-') + '\u5ea6\u26a1';
+        });
+      }
+      blocks.push(out);
     } catch (e) {
       const code = String((e && e.code) || '');
       if (code === '4006' || code === 'RK008') {
         ctx.storage.setJSON(THROTTLE, Object.assign({}, th0, { queryDay: '' }));
-        notify('网上国网：登录态失效', String((e && e.message) || e) + '\n若提示验证码，填 SGCC_SMS 保存即可');
+        notify('\u7f51\u4e0a\u56fd\u7f51\uff1a\u767b\u5f55\u6001\u5931\u6548', String((e && e.message) || e) + '\n\u82e5\u63d0\u793a\u9a8c\u8bc1\u7801\uff0c\u586b SGCC_SMS \u4fdd\u5b58\u5373\u53ef');
         return;
       }
-      blocks.push('户号…' + String(a.consNo).slice(-5) + ' 查询失败: ' + String((e && e.message) || e));
+      blocks.push('\u6237\u53f7\u2026' + String(a.consNo).replace(/\D/g, '').slice(-5) + ' \u67e5\u8be2\u5931\u8d25: ' + String((e && e.message) || e));
     }
   }
-  if (blocks.length) notify('网上国网', blocks.join('\n──────\n'));
+  if (blocks.length) notify('\u7f51\u4e0a\u56fd\u7f51', blocks.join('\n\u2500\u2500\u2500\u2500\u2500\u2500\n'));
   ctx.storage.setJSON(THROTTLE, Object.assign({}, th0, { queryDay: today }));
 }
