@@ -1,0 +1,16 @@
+#!name=Talkatone 走美国家宽
+#!desc=Talkatone 业务域名/语音网段整体锁定美国出口。若你的美国策略组不叫 美国手动，选中规则行改策略即可。ip-api.com 探测接口与业务同策略，勿单独直连
+#!author=pwremilk[https://github.com/pwremilk]
+#!icon=phone.bubble.left.fill
+
+[Rule]
+DOMAIN-SUFFIX,talkatone.com,美国手动
+DOMAIN-SUFFIX,tktn.at,美国手动
+DOMAIN-SUFFIX,tktn.be,美国手动
+DOMAIN,ip-api.com,美国手动
+DOMAIN,tenor.com,美国手动
+IP-CIDR,205.164.56.0/24,美国手动,no-resolve
+IP-CIDR,216.172.154.0/24,美国手动,no-resolve
+IP-CIDR,50.117.27.0/24,美国手动,no-resolve
+IP-CIDR,63.251.124.0/24,美国手动,no-resolve
+IP-CIDR,69.46.75.0/24,美国手动,no-resolve
