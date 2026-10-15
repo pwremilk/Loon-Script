@@ -1,0 +1,14 @@
+name: Talkatone 走美国家宽
+description: Talkatone 业务域/语音网段锁定美国出口；ip-api.com 探测接口同策略防风控。策略名如与你的美国组不同，在模块规则里改选策略即可
+author: pwremilk
+rules:
+  - "DOMAIN-SUFFIX,talkatone.com,美国手动"
+  - "DOMAIN-SUFFIX,tktn.at,美国手动"
+  - "DOMAIN-SUFFIX,tktn.be,美国手动"
+  - "DOMAIN,ip-api.com,美国手动"
+  - "DOMAIN,tenor.com,美国手动"
+  - "IP-CIDR,205.164.56.0/24,美国手动,no-resolve"
+  - "IP-CIDR,216.172.154.0/24,美国手动,no-resolve"
+  - "IP-CIDR,50.117.27.0/24,美国手动,no-resolve"
+  - "IP-CIDR,63.251.124.0/24,美国手动,no-resolve"
+  - "IP-CIDR,69.46.75.0/24,美国手动,no-resolve"
