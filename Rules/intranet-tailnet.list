@@ -1,0 +1,32 @@
+# intranet-tailnet — 管理面域名组（Egern/Stash 规则组）
+# 命中即走 Tailscale 协议节点（tailnet 直连各机 100.64.0.x），不再暴露公网
+# 面板类可随「收进 tailnet」进度增删；维护: pwremilk/Loon-Script
+# --- 订阅/面板 ---
+DOMAIN,sui.pwremilk.com
+DOMAIN,krsui.pwremilk.com
+DOMAIN,sgsui.pwremilk.com
+DOMAIN,jpsui.pwremilk.com
+DOMAIN,usui.pwremilk.com
+DOMAIN,komari.pwremilk.com
+DOMAIN,ql.pwremilk.com
+DOMAIN,ql1.pwremilk.com
+DOMAIN,frp.pwremilk.com
+DOMAIN,frps.pwremilk.com
+DOMAIN,ss.pwremilk.com
+DOMAIN,ps.pwremilk.com
+DOMAIN,mail.pwremilk.com
+DOMAIN,bot.pwremilk.com
+# --- fanout 面板 ---
+DOMAIN,phf.pwremilk.com
+DOMAIN,krf.pwremilk.com
+DOMAIN,jpf.pwremilk.com
+DOMAIN,sgf.pwremilk.com
+# --- 家里内网（经 home subnet router 192.168.1.0/24）---
+DOMAIN,esxi.pwremilk.com
+DOMAIN,fn.pwremilk.com
+DOMAIN,ik.pwremilk.com
+DOMAIN,zz.pwremilk.com
+DOMAIN,op.pwremilk.com
+# --- 其它自建小工具（按需保留）---
+DOMAIN,ip.pwremilk.com
+DOMAIN,pansou.pwremilk.com
