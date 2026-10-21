@@ -17,10 +17,6 @@ DOMAIN,ps.pwremilk.com
 DOMAIN,mail.pwremilk.com
 DOMAIN,bot.pwremilk.com
 # --- fanout 面板 ---
-DOMAIN,phf.pwremilk.com
-DOMAIN,krf.pwremilk.com
-DOMAIN,jpf.pwremilk.com
-DOMAIN,sgf.pwremilk.com
 # --- 家里内网（经 home subnet router 192.168.1.0/24）---
 DOMAIN,esxi.pwremilk.com
 DOMAIN,fn.pwremilk.com
