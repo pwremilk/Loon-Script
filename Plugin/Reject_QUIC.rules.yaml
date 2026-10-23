@@ -1,0 +1,6 @@
+# 远程规则集：匹配所有 QUIC 连接
+# 在 Egern 主配置 rules 里用 rule_set 引用并配 policy: REJECT，
+# 让所有 QUIC 秒失败、强制 app 回落 TCP（治 TikTok 等 app 的"无网络"）。
+# 维护: pwremilk/Loon-Script
+protocol_set:
+  - quic
