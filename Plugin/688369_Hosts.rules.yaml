@@ -1,0 +1,17 @@
+# 远程规则集：688369.xyz 指定主机名（精确匹配，不覆盖整域）
+# 维护: pwremilk/Loon-Script
+#
+# 在 Egern 主配置 rules 段引用，policy 填你要走的节点：
+# rules:
+#   - rule_set:
+#       match: "https://raw.githubusercontent.com/pwremilk/Loon-Script/main/Plugin/688369_Hosts.rules.yaml"
+#       policy: <策略名>
+#       update_interval: 86400
+
+domain_set:
+  - g.688369.xyz
+  - j.688369.xyz
+  - k.688369.xyz
+  - p.688369.xyz
+  - s.688369.xyz
+  - u.688369.xyz
